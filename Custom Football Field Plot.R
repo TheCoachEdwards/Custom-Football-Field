@@ -1,8 +1,10 @@
 #####Read in libraries#####
 library(png)
 library(ggplot2)
-font_import()
-loadfonts(quiet = TRUE)
+library(sysfonts)
+library(extrafont)
+library(showtext)
+
 #####Read in Midfield & Conference Logo Images#####
 mypngfile <- download.file('https://a.espncdn.com/i/teamlogos/ncaa/500/258.png', destfile = 'mypng.png', mode = 'wb')
 mypng <- readPNG('mypng.png')
@@ -14,7 +16,8 @@ myACCLogopng <- readPNG('myACCLogo.png')
 font_add_google(name = "Libre Caslon Text", family = "caslon") ## This font was on google fonts
 font_add(family = "Bodoni", regular = "Downloads/BodoniModa/static/BodoniModa-SemiBold.ttf") ##This font I needed to download and read in manually. But Now you can see both examples
 
-
+font_add(family = "UVA", regular = "Downloads/Cavalier.otf")
+showtext_auto()
 #####Set up Data Frames for Diamond EndZones to call in ggplot#####
 HomeDiamonds = data.frame(y=c(4.27,7.07,9.87,7.07, 9.87,12.67,15.47,12.67, 15.47,18.27,21.07,18.27, 21.07,23.87,26.67,23.87, 26.67,29.47,32.27,29.47, 32.27,35.07,37.87,35.07, 37.87,40.67,43.47,40.67, 43.47,46.27,49.07,46.27),
                       x=c(5,.5,5,9.5,5,.5,5,9.5,5,.5,5,9.5,5,.5,5,9.5,5,.5,5,9.5,5,.5,5,9.5,5,.5,5,9.5,5,.5,5,9.5),
@@ -26,8 +29,8 @@ AwayDiamonds = data.frame(y=c(4.27,7.07,9.87,7.07, 9.87,12.67,15.47,12.67, 15.47
 #####Set up Data Frames to call for letters and numbers in ggplot#####
 HomeLettersDF = data.frame(x = c(5, 5, 5, 5, 5, 5, 5, 5), y = c(7.07, 12.67, 18.27, 23.87, 29.47, 35.07, 40.67, 46.27), Letter = c("V", "I", "R", "G", "I", "N", "I", "A"))
 AwayLettersDF = data.frame(x = c(115, 115, 115, 115, 115, 115, 115, 115), y = c(7.07, 12.67, 18.27, 23.87, 29.47, 35.07, 40.67, 46.27), Letter = c("A", "I", "N", "I", "G", "R", "I", "V"))
-FarFieldNumbers = data.frame(x= c(19.6,29.9,39.8,49.9,59.8,69.9,79.8,89.9,99.6), y = c(45.83, 45.83, 45.83, 45.83, 45.83, 45.83, 45.83, 45.83, 45.83), Number = c(10,20,30,40,50,40,30,20,10))
-CloseFieldNumbers = data.frame(x= c(20.4,30.1,40.2,50.1,60.2,70.1,80.2,90.1,100.4), y = c(7.5,7.5,7.5,7.5,7.5,7.5,7.5,7.5,7.5), Number = c(10,20,30,40,50,40,30,20,10))
+FarFieldNumbers = data.frame(x= c(19.5,30,40,50,60,70,80,90,99.5), y = c(45.83, 45.83, 45.83, 45.83, 45.83, 45.83, 45.83, 45.83, 45.83), Number = c(10,20,30,40,50,40,30,20,10))
+CloseFieldNumbers = data.frame(x= c(20.5,30,40,50,60,70,80,90,100.5), y = c(7.5,7.5,7.5,7.5,7.5,7.5,7.5,7.5,7.5), Number = c(10,20,30,40,50,40,30,20,10))
 
 #####Create Football Field#####
 football_field <- ggplot()+
@@ -76,8 +79,8 @@ football_field <- ggplot()+
   geom_segment(aes(x = 10, xend = 110, y = 52.83, yend = 52.83), colour = "#FFFFFF", linetype = "dashed") +
   geom_segment(aes(x = 0, xend = 0, y=23.57, yend = 29.77), colour = "yellow", size = 1.3) + ## The next two lines are the FG Posts
   geom_segment(aes(x = 120, xend = 120, y = 23.57, yend = 29.77), colour = "yellow", size = 1.3) +
-  geom_text(data = CloseFieldNumbers, mapping = aes(x,y, label = Number), colour = "#FFFFFF", size = 8, family = "Bodoni") + ##These are the Numbers on the field
-  geom_text(data = FarFieldNumbers, mapping = aes(x, y, label = Number), colour = "#FFFFFF", size = 8, family = "Bodoni", angle = 180) +
+  geom_text(data = CloseFieldNumbers, mapping = aes(x,y, label = Number), colour = "#FFFFFF", size = 8, family = "UVA") + ##These are the Numbers on the field
+  geom_text(data = FarFieldNumbers, mapping = aes(x, y, label = Number), colour = "#FFFFFF", size = 8, family = "UVA", angle = 180) +
   annotation_raster(mypng, ymin = 18, ymax = 35.5, xmin = 50, xmax = 70) + ##This is where you add the Midfield Logo
   annotation_raster(myACCLogopng, ymin = 12.67, ymax = 16, xmin = 81, xmax = 90) + ##Add ACC Logos
   annotation_raster(myACCLogopng, ymin = 37.33, ymax = 40.67, xmin = 31, xmax = 40) +
@@ -85,8 +88,8 @@ football_field <- ggplot()+
   geom_segment(aes(x = 107, xend = 107, y = 26.33, yend = 27), colour = "#FFFFFF") +
   geom_polygon(data=HomeDiamonds, mapping=aes(x=x, y=y, group = t), colour = "#232D4B", fill = "#FFFFFF") + ## Put in Diamond EndZones
   geom_polygon(data=AwayDiamonds, mapping=aes(x=x, y=y, group = t), colour = "#232D4B", fill = "#FFFFFF") +
-  geom_text(data = HomeLettersDF, aes(x, y, label = Letter), colour = "#F84C1E", family = "caslon", size = 9, angle = 90) + ##Add Virginia to the Diamonds
-  geom_text(data = AwayLettersDF, aes(x, y, label = Letter), colour = "#F84C1E", family = "caslon", size = 9, angle = 270) +
+  geom_text(data = HomeLettersDF, aes(x, y, label = Letter), colour = "#F84C1E", family = "UVA", size = 9, angle = 90) + ##Add Virginia to the Diamonds
+  geom_text(data = AwayLettersDF, aes(x, y, label = Letter), colour = "#F84C1E", family = "UVA", size = 9, angle = 270) +
   theme(rect = element_blank(), ##This removes all of the exterior lines from a typical ggplot
         line = element_blank(),
         text = element_blank()) +
