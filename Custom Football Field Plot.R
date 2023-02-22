@@ -5,6 +5,7 @@ library(sysfonts)
 library(extrafont)
 library(showtext)
 
+
 #####Read in Midfield & Conference Logo Images#####
 mypngfile <- download.file('https://a.espncdn.com/i/teamlogos/ncaa/500/258.png', destfile = 'mypng.png', mode = 'wb')
 mypng <- readPNG('mypng.png')
@@ -14,10 +15,11 @@ myACCLogopng <- readPNG('myACCLogo.png')
 
 #####Add Any Custom Fonts You Want#####
 font_add_google(name = "Libre Caslon Text", family = "caslon") ## This font was on google fonts
-font_add(family = "Bodoni", regular = "Downloads/BodoniModa/static/BodoniModa-SemiBold.ttf") ##This font I needed to download and read in manually. But Now you can see both examples
+font_add(family = "Bodoni", regular = "/Users/mattedwards/Downloads/Bodoni_Moda/static/BodoniModa_18pt/BodoniModa_18pt-SemiBold.ttf") ##This font I needed to download and read in manually. But Now you can see both examples
 
-font_add(family = "UVA", regular = "Downloads/Cavalier.otf")
+font_add_google(name = "Libre Franklin", family = "UVA")
 showtext_auto()
+
 #####Set up Data Frames for Diamond EndZones to call in ggplot#####
 HomeDiamonds = data.frame(y=c(4.27,7.07,9.87,7.07, 9.87,12.67,15.47,12.67, 15.47,18.27,21.07,18.27, 21.07,23.87,26.67,23.87, 26.67,29.47,32.27,29.47, 32.27,35.07,37.87,35.07, 37.87,40.67,43.47,40.67, 43.47,46.27,49.07,46.27),
                       x=c(5,.5,5,9.5,5,.5,5,9.5,5,.5,5,9.5,5,.5,5,9.5,5,.5,5,9.5,5,.5,5,9.5,5,.5,5,9.5,5,.5,5,9.5),
@@ -26,6 +28,7 @@ HomeDiamonds = data.frame(y=c(4.27,7.07,9.87,7.07, 9.87,12.67,15.47,12.67, 15.47
 AwayDiamonds = data.frame(y=c(4.27,7.07,9.87,7.07, 9.87,12.67,15.47,12.67, 15.47,18.27,21.07,18.27, 21.07,23.87,26.67,23.87, 26.67,29.47,32.27,29.47, 32.27,35.07,37.87,35.07, 37.87,40.67,43.47,40.67, 43.47,46.27,49.07,46.27),
                           x=c(115,110.5,115,119.5,115,110.5,115,119.5,115,110.5,115,119.5,115,110.5,115,119.5,115,110.5,115,119.5,115,110.5,115,119.5,115,110.5,115,119.5,115,110.5,115,119.5),
                           t = c('a', 'a', 'a', 'a', 'b', 'b', 'b', 'b', 'c', 'c', 'c', 'c', 'd', 'd', 'd', 'd', 'e', 'e', 'e', 'e', 'f', 'f', 'f', 'f', 'g', 'g', 'g', 'g', 'h', 'h', 'h', 'h'))
+
 #####Set up Data Frames to call for letters and numbers in ggplot#####
 HomeLettersDF = data.frame(x = c(5, 5, 5, 5, 5, 5, 5, 5), y = c(7.07, 12.67, 18.27, 23.87, 29.47, 35.07, 40.67, 46.27), Letter = c("V", "I", "R", "G", "I", "N", "I", "A"))
 AwayLettersDF = data.frame(x = c(115, 115, 115, 115, 115, 115, 115, 115), y = c(7.07, 12.67, 18.27, 23.87, 29.47, 35.07, 40.67, 46.27), Letter = c("A", "I", "N", "I", "G", "R", "I", "V"))
@@ -33,7 +36,7 @@ FarFieldNumbers = data.frame(x= c(19.5,30,40,50,60,70,80,90,99.5), y = c(45.83, 
 CloseFieldNumbers = data.frame(x= c(20.5,30,40,50,60,70,80,90,100.5), y = c(7.5,7.5,7.5,7.5,7.5,7.5,7.5,7.5,7.5), Number = c(10,20,30,40,50,40,30,20,10))
 
 #####Create Football Field#####
-football_field <- ggplot()+
+ggplot() +
   geom_rect(aes(xmin = -4, xmax = 124, ymin = -4, ymax = 57.33), fill = "#669933", colour = "#FFFFFF", size = .5) + ##These First few geom-rect's set up the field space
   geom_rect(aes(xmin = 0, xmax = 120, ymin = 0, ymax = 53.33), fill = "#669933", colour = "#FFFFFF", size = .5) +
   geom_rect(aes(xmin = 35, xmax = 85, ymin = -2, ymax = 0), fill = "#FFFFFF", colour = "#FFFFFF") + ##These next few set up the boxes around the field
@@ -92,10 +95,9 @@ football_field <- ggplot()+
   geom_text(data = AwayLettersDF, aes(x, y, label = Letter), colour = "#F84C1E", family = "UVA", size = 9, angle = 270) +
   theme(rect = element_blank(), ##This removes all of the exterior lines from a typical ggplot
         line = element_blank(),
-        text = element_blank()) +
-  ggsave("UVA Football Field.png", width = 12.8, height = 6.13)
+        text = element_blank())
 
-football_field
+ggsave("UVA Football Field.png", width = 12.8, height = 6.13)
 
 #####
 ##Most colors used here are just white and green, but the orange on the outside of the field is UVA's orange##
